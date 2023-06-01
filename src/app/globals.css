@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-custom-background-main {
+    background-image: url('../../public//assets//background.png');
+}
+/* styles.css */
