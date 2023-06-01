@@ -220,6 +220,7 @@ const stages = [
   // Add more stage objects here
 ];
 
+
 const seedData = async () => {
   try {
     await mongoose.connect(MONGODB_URI, {
@@ -239,6 +240,7 @@ const seedData = async () => {
     const topic = new Topic({
       name: 'react',
       description: 'React topic',
+      stages: [], // Initialize stages array
     });
 
     for (const stage of stages) {
@@ -254,12 +256,13 @@ const seedData = async () => {
         questions: stageQuestions,
       });
       topic.stages.push(newStage);
+      await newStage.save(); // Save the stage in the database
     }
 
     await topic.save();
     console.log('Seed data inserted successfully.');
 
-    mongoose.connection.close();
+    await mongoose.connection.close();
   } catch (error) {
     console.error('Error seeding data:', error);
   }

@@ -23,6 +23,19 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Define other topic routes as needed
+// Fetch stages for a specific topic
+router.get('/:topicId/stages', async (req, res) => {
+  try {
+    const topicId = req.params.topicId;
+    console.log(topicId);
+    const stages = await Stage.find({ topic: topicId });
+    res.status(200).json(stages);
+  } catch (error) {
+    console.error('Error fetching stages:', error);
+    res.status(500).json({ error: 'Unable to fetch stages' });
+  }
+});
+
+
 
 module.exports = router;

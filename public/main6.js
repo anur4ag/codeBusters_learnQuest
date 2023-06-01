@@ -1,4 +1,4 @@
-// Utility function to create an HTML element
+// Function to create an HTML element
 function createElement(tag, text, className) {
     const element = document.createElement(tag);
     if (text) {
@@ -11,7 +11,7 @@ function createElement(tag, text, className) {
   }
   
   // Function to display topics
-  async function showTopics(topics) {
+  function showTopics(topics) {
     const topicsContainer = document.getElementById('topicsContainer');
     topicsContainer.innerHTML = '';
   
@@ -19,58 +19,65 @@ function createElement(tag, text, className) {
     topics.forEach(topic => {
       // Create a button for the topic
       const topicButton = createElement('button', topic.name);
-      topicButton.addEventListener('click', async () => {
-        await showStages(topic.stages); // Pass the stages array of the topic here
+      topicButton.addEventListener('click', () => {
+        showStages(topic.stages);
       });
       topicsContainer.appendChild(topicButton);
     });
   }
   
   // Function to display stages for a topic
-  async function showStages(stages) {
+  function showStages(stages) {
     const topicsContainer = document.getElementById('topicsContainer');
     topicsContainer.innerHTML = '';
   
     // Iterate over each stage
-    for (const stageId of stages) {
-      try {
-        const response = await fetch(`/api/stages/${stageId}`);
-        const stage = await response.json();
-  
-        // Create a button for the stage
-        const stageButton = createElement('button', `Stage ${stage.stageId}`);
-        stageButton.addEventListener('click', async () => {
-          await showQuestions(stage.questions);
-        });
-        topicsContainer.appendChild(stageButton);
-      } catch (error) {
-        console.error('Error fetching stage:', error);
-      }
-    }
+    stages.forEach(stage => {
+      // Create a button for the stage
+      const stageButton = createElement('button', `Stage ${stage.stageId}`);
+      stageButton.addEventListener('click', () => {
+        fetch(`/api/questions?stageId=${stage._id}`)
+          .then(response => response.json())
+          .then(questions => {
+            showQuestions(questions);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      });
+      topicsContainer.appendChild(stageButton);
+    });
   }
   
   // Function to display questions for a stage
-  async function showQuestions(questions) {
+  // Function to display questions for a topic
+function showQuestions(questions) {
     const topicsContainer = document.getElementById('topicsContainer');
     topicsContainer.innerHTML = '';
   
     // Iterate over each question
-    questions.forEach(questionId => {
-      fetch(`/api/questions/${questionId}`)
-        .then(response => response.json())
-        .then(question => {
-          // Create a button for the question
-          const questionButton = createElement('button', question.question);
-          questionButton.addEventListener('click', () => {
-            showQuestionDetails(question);
-          });
-          topicsContainer.appendChild(questionButton);
-        })
-        .catch(error => {
-          console.error('Error fetching question:', error);
+    questions.forEach(question => {
+      // Create a button for the question
+      const questionButton = createElement('button', question.question);
+      questionButton.addEventListener('click', () => {
+        // Display the question details
+        const questionDetails = document.getElementById('questionDetails');
+        questionDetails.innerHTML = '';
+        const questionText = createElement('p', `Question: ${question.question}`);
+        const optionsList = createElement('ul');
+        question.options.forEach(option => {
+          const optionItem = createElement('li', option);
+          optionsList.appendChild(optionItem);
         });
+        const answerText = createElement('p', `Answer: ${question.answer}`);
+        questionDetails.appendChild(questionText);
+        questionDetails.appendChild(optionsList);
+        questionDetails.appendChild(answerText);
+      });
+      topicsContainer.appendChild(questionButton);
     });
   }
+  
   
   // Function to display the details of a question
   function showQuestionDetails(question) {
@@ -102,15 +109,12 @@ function createElement(tag, text, className) {
   }
   
   // Retrieve the topics data from the server
-  async function fetchTopics() {
-    try {
-      const response = await fetch('/api/topics');
-      const topics = await response.json();
+  fetch('/api/topics')
+    .then(response => response.json())
+    .then(topics => {
       showTopics(topics);
-    } catch (error) {
-      console.error('Error fetching topics:', error);
-    }
-  }
-  
-  fetchTopics();
+    })
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
   

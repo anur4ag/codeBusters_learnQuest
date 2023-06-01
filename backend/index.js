@@ -8,6 +8,7 @@ const cors = require('cors');
 // Import routes
 const questionRoutes = require('./routes/questionRoutes');
 const topicRoutes = require('./routes/topicRoutes');
+const stageRoutes = require('./routes/stageRoutes');
 const signupRoutes = require('./routes/signupRoutes');
 const loginRoutes = require('./routes/loginRoutes');
 
@@ -46,6 +47,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/mydatabase", {
 
 // Routes
 app.use('/api/topics', topicRoutes);
+app.use('/api/stages', stageRoutes);
 app.use('/signup', signupRoutes);
 app.use('/login', loginRoutes);
 app.use('/api/questions', questionRoutes);

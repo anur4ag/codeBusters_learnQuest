@@ -71,4 +71,16 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Fetch questions for a specific topic
+// router.get('/questions/:topicId', async (req, res) => {
+//     try {
+//       const topicId = req.params.topicId;
+//       const questions = await Question.find({ topic: topicId });
+//       res.status(200).json(questions);
+//     } catch (error) {
+//       res.status(500).json({ error: 'Unable to fetch questions' });
+//     }
+//   });
+  
+
 module.exports = router;
