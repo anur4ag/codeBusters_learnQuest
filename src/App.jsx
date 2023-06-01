@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import './App.css'
 
 import ConnectWallet from './components/ConnectWallet'
-import Dashboard from './components/Dashboard'
+import Topics from './components/Topics'
 import AboutSection from './components/AboutSection'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
@@ -15,7 +15,7 @@ function App() {
         <Routes>
           {/* <Route path="/" element={<ConnectWallet account={account} setAccount={setAccount} />} /> */}
           <Route path="/" element={<CombinedSection account={account} setAccount={setAccount}/>} />
-          <Route path="/dashboard" element={<Dashboard account={account} />} />
+          <Route path="/topics" element={<Topics account={account} />} />
         </Routes>
       </Router>
     </>
