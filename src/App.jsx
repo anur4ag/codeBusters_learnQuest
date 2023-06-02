@@ -8,6 +8,7 @@ import GameHome2 from "./components/GameHome2";
 import GameHome3 from "./components/GameHome3";
 import GameHome4 from "./components/GameHome4";
 import GameHome5 from "./components/GameHome5";
+import Leaderboard from "./components/Leaderboard";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           {/* <Route path="/" element={<ConnectWallet account={account} setAccount={setAccount} />} /> */}
           <Route path="/" element={<CombinedSection account={account} setAccount={setAccount}/>} />
           <Route path="/dashboard" element={<Dashboard account={account} />} />
+          <Route path="/dashboard/leaderboard" element={<Leaderboard />} />
           <Route path="/dashboard/game1" element={<GameHome1 />} />
           <Route path="/dashboard/game2" element={<GameHome2 />} />
           <Route path="/dashboard/game3" element={<GameHome3 />} />

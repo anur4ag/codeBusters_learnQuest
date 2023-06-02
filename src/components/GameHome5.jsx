@@ -20,7 +20,7 @@ function GameHome5() {
                 <p className="">d. Lifecycle components</p>
               </div>
 
-              <Button message="Continue"/>
+              <Button message="Continue" href="/dashboard/leaderboard"/>
             </div>
           </div>
 
