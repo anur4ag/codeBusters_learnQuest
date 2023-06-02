@@ -1,113 +1,102 @@
-import { useState, React } from 'react';
-import Button from './Button';
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { createRoot } from 'react-dom';
+import axios from 'axios';
 
-function Topics() {
-  const [htmlPage, setHtmlPage] = useState("");
-
-  function createElement(tag, text, className) {
-    const element = document.createElement(tag);
-    if (text) {
-      element.textContent = text;
-    }
-    if (className) {
-      element.className = className;
-    }
-    return element;
-  }
-
-  async function showTopics(topics) {
-    setHtmlPage("");
-    console.log(topics);
-
-    function myFunction(topic) {
-      showStages(topic.stages);
-    }
-
-    topics.forEach(topic => {
-      let buttonHTML = "<button onclick='myFunction()' class='g-custom-pink hover:bg-custom-pink-dark text-white text-xl font-bold py-4 mt-6 px-8 rounded-lg drop-shadow-2xl hover:drop-shadow-xl'>"+ topic.name +"</button>";
-
-      setHtmlPage(prevHtmlPage => prevHtmlPage + buttonHTML);
-    });
-  }
-
-  async function showStages(stages) {
-    setHtmlPage("");
-    let count = 1;
-
-    function myFunction(response) {
-      showQuestions(response.questions);
-    }
-
-    for (const stageId of stages) {
-      try {
-        const response = await axios.get(`http://localhost:3000/api/stages/${stageId}`, {});
-
-        let buttonHTML = "<button onclick='myFunction()' class='g-custom-pink hover:bg-custom-pink-dark text-white text-xl font-bold py-4 mt-6 px-8 rounded-lg drop-shadow-2xl hover:drop-shadow-xl'>"+ count +"</button>";
-
-        setHtmlPage(prevHtmlPage => prevHtmlPage + buttonHTML);
-      } catch (error) {
-        console.error('Error fetching stage:', error);
-      }
-      count++;
-    }
-  }
-
-  async function showQuestions(questions) {
-    setHtmlPage("");
-    let count = 1;
-
-    function myFunction(response) {
-      showQuestionDetails(response);
-    }
-
-    for (const questionId in questions) {
-      if (questions.hasOwnProperty(questionId)) {
-        try {
-          const response = await axios.get(`http://localhost:3000/api/questions/${questionId}`, {});
-
-          let buttonHTML = "<button onclick='myFunction()' class='g-custom-pink hover:bg-custom-pink-dark text-white text-xl font-bold py-4 mt-6 px-8 rounded-lg drop-shadow-2xl hover:drop-shadow-xl'>"+ count +"</button>";
-
-          setHtmlPage(prevHtmlPage => prevHtmlPage + buttonHTML);
-        } catch (error) {
-          console.error('Error fetching question:', error);
-        }
-      }
-      count++;
-    }
-  }
-
-  function showQuestionDetails(question) {
-    setHtmlPage("");
-    let htmlPage = "";
-
-    htmlPage += "<div class='question-details-container'>";
-    htmlPage += "<p>"+ question.question +"</p>";
-    htmlPage += "<ul>";
-    question.options.forEach(option => {
-      htmlPage += "<li>"+ option +"</li>";
-    });
-    htmlPage += "</ul>";
-    htmlPage += "<p> Answer:"+ question.answer +"</p>";
-    htmlPage += "<p> Hint:"+ question.hint +"</p>";
-    htmlPage += "<p> Explanation:"+ question.explanation +"</p>";
-    htmlPage += "</div>";
-
-    setHtmlPage(htmlPage);
-  }
+function MainComponent() {
+  const [topics, setTopics] = useState([]);
 
   async function fetchTopics() {
     try {
-      const response = await axios.get(`http://localhost:3000/api/topics`, {});
-      showTopics(response.data);
+      const response = await axios.get('http://localhost:3000/api/topics');
+      const topics = response.data;
+      setTopics(topics);
     } catch (error) {
       console.error('Error fetching topics:', error);
     }
   }
 
-  fetchTopics();
+  async function showTopics(topics) {
+    const topicsContainer = document.getElementById('topicsContainer');
+    topicsContainer.innerHTML = '';
 
-  return htmlPage;
+    topics.forEach(topic => {
+      const topicButton = (
+        <button key={topic._id} onClick={() => showStages(topic._id)}>
+          {topic.name}
+        </button>
+      );
+
+      createRoot(topicsContainer).render(topicButton);
+    });
+  }
+
+  async function showStages(topicId) {
+    const topicsContainer = document.getElementById('topicsContainer');
+    topicsContainer.innerHTML = '';
+
+    try {
+      const response = await axios.get(`http://localhost:3000/api/topics/${topicId}/stages`);
+      const stages = response.data;
+
+      stages.forEach(stage => {
+        const stageButton = (
+          <button key={stage._id} onClick={() => showQuestions(stage.questions)}>
+            Stage {stage.stageId}
+          </button>
+        );
+
+        createRoot(topicsContainer).render(stageButton);
+      });
+    } catch (error) {
+      console.error('Error fetching stages:', error);
+    }
+  }
+
+  async function showQuestions(questions) {
+    const topicsContainer = document.getElementById('topicsContainer');
+    topicsContainer.innerHTML = '';
+
+    questions.forEach(questionId => {
+      axios.get(`http://localhost:3000/api/questions/${questionId}`)
+        .then(response => response.data)
+        .then(question => {
+          const questionButton = (
+            <button key={question._id} onClick={() => showQuestionDetails(question)}>
+              {question.question}
+            </button>
+          );
+
+          createRoot(topicsContainer).render(questionButton);
+        })
+        .catch(error => {
+          console.error('Error fetching question:', error);
+        });
+    });
+  }
+
+  function showQuestionDetails(question) {
+    const topicsContainer = document.getElementById('topicsContainer');
+    topicsContainer.innerHTML = '';
+
+    const questionContainer = (
+      <div className="question-details-container">
+        <p>{question.question}</p>
+        <ul>
+          {question.options.map(option => (
+            <li key={option}>{option}</li>
+          ))}
+        </ul>
+        <p>Answer: {question.answer}</p>
+        <p>Hint: {question.hint}</p>
+        <p>Explanation: {question.explanation}</p>
+      </div>
+    );
+
+    createRoot(topicsContainer).render(questionContainer);
+  }
+    fetchTopics();
+
+  return <div id="topicsContainer"></div>;
 }
 
-export default Topics;
+export default MainComponent;

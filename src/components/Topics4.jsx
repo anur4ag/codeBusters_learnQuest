@@ -8,8 +8,6 @@ function topics() {
     let html1 = "<div> <h1> HELLO </h1> </div>";
     let htmlPage = "";
 
-
-
     function createElement(tag, text, className) {
       const element = document.createElement(tag);
       if (text) {
@@ -162,12 +160,10 @@ function topics() {
     }
     
     fetchTopics();
-    
+    let finalPage = html1 + htmlPage;
 
   return (
-    <>
-    htmlPage
-    </>
+    <div dangerouslySetInnerHTML={{ __html: finalPage}} />
   )
 }
 

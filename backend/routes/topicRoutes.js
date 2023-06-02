@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Topic = require('../models/topic');
+const Stage = require('../models/stage');
 
 // Fetch all topics
 router.get('/', async (req, res) => {
