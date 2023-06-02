@@ -4,6 +4,7 @@ import home from '../assets/home.png'
 
 function AboutSection(props) {
   return (
+    <>
     <section className="home bg-[url(./assets/background.png)] min-h-screen bg-no-repeat bg-cover bg-center ">
     <Navbar/>
         <div className="row mt-44">
@@ -25,6 +26,9 @@ function AboutSection(props) {
           </div>
         </div>
       </section>
+      <section className='bg-[url(./assets/nftAbout.png)] min-h-screen bg-no-repeat bg-cover bg-center relative'>
+      </section>
+      </>
   )
 }
 
