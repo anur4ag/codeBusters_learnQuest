@@ -8,7 +8,7 @@ function Dashboard(props) {
         <div className="absolute top-44 left-12">
             <h1 className='text-6xl text-white font-semibold'>LET THE BATTLE BEGIN</h1>
             <div className="flex flex-row flex-wrap gap-10">
-            <Button message="React.js"/>
+            <Button message="React.js" href="/dashboard/game1"/>
             <Button message="Node.js"/>
             <Button message="Express.js"/>
             <Button message="MongoDB"/>
